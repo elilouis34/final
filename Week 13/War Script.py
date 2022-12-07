@@ -82,9 +82,17 @@ class Game:
             # self.sprite2 = pygame.transform.scale(self.sprite2, (int(self.sprite2.get_width() * scale), int(self.sprite2.get_height() * scale)))
 
         else:
+            pygame.mixer.init
             win = self.totalWinner(self.p1, self.p2)
+            if win == "It was a tie":
+                pygame.mixer.Sound("Assets/Sounds/roblox-oof.wav").play()
+            else:
+                pygame.mixer.Sound("Assets/Sounds/success.wav").play()
+            # pygame.mixer.music.play()
+            # pygame.mixer.music.stop()
             print(f"The war is over! {win} is the victor!")
             return True, win
+           
 
     def draw_score(self, surface):
         pygame.font.init()
@@ -136,6 +144,8 @@ is_running = True
 random_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
                                             text='Randomize',
                                             manager=manager)
+
+
 is_win = False
 winner = None
 #this code helps with performance and framrate issues
