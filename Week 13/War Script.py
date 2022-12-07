@@ -5,14 +5,14 @@ import pygame_gui
 from pygame.locals import *
 
 pygame.init()
-pygame.display.set_caption('Quick Start')
+pygame.display.set_caption('Aggie War')
 window_surface = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
 
 class Game:
     def __init__(self):
         self.deck = Deck()
-        self.p1 = Player(p1Name)
-        self.p2 = Player(p2Name)
+        self.p1 = Player("Player 1")
+        self.p2 = Player("Player 2")
         self.iterations = 0
         self.sprite1 = pygame.image.load("Assets/Cards/red_joker.png").convert_alpha()
         self.sprite2 = pygame.image.load("Assets/Cards/red_joker.png").convert_alpha()
@@ -78,42 +78,51 @@ class Game:
             print(f"p2 wins: {self.p2.wins}")
 
             self.draw_score(surface)
-    
+            return False, None
             # self.sprite2 = pygame.transform.scale(self.sprite2, (int(self.sprite2.get_width() * scale), int(self.sprite2.get_height() * scale)))
 
-            
-        win = self.totalWinner(self.p1, self.p2)
-        print(f"The war is over! {win} is the victor!")
+        else:
+            win = self.totalWinner(self.p1, self.p2)
+            print(f"The war is over! {win} is the victor!")
+            return True, win
 
     def draw_score(self, surface):
         pygame.font.init()
         pygame.display.flip()
-        white = (255, 255, 255)
-        opensans_path = "Assets/fonts/BebasNeue-Regular.ttf"
-        myfont = pygame.font.Font(opensans_path, 32)
-        p1_text = myfont.render(f"Player 1 has: {self.p1.wins} wins", 1, white)
-        p2_text = myfont.render(f"Player 2 has: {self.p2.wins} wins", 1, white)
-        iter_text = myfont.render(f"Turns: {self.iterations}", 1, white)
+        self.white = (255, 255, 255)
+        self.font_path = "Assets/fonts/BebasNeue-Regular.ttf"
+        self.myfont = pygame.font.Font(self.font_path, 32)
+        self.myfont2 = pygame.font.Font(self.font_path, 40)
+        p1_text = self.myfont.render(f"Player 1 has: {self.p1.wins} wins", 1, self.white)
+        p2_text = self.myfont.render(f"Player 2 has: {self.p2.wins} wins", 1, self.white)
+        iter_text = self.myfont2.render(f"Turns: {self.iterations}", 1, self.white)
         surfaceWidth = surface.get_width()
         surfaceHeight = surface.get_height()
         p1_rect = p1_text.get_rect(center = (surfaceWidth/4, surfaceHeight/8))
         p2_rect = p2_text.get_rect(center = (surfaceWidth/4 + surfaceWidth/2, surfaceHeight/8))
-        iter_rect = iter_text.get_rect(center = (surfaceWidth/2, surfaceHeight/4+surfaceHeight/2))
+        iter_rect = iter_text.get_rect(center = (surfaceWidth/2, surfaceHeight/4+surfaceHeight/2+80))
         surface.blit(p1_text, p1_rect)
         surface.blit(p2_text, p2_rect)
         surface.blit(iter_text, iter_rect)
 
     def totalWinner(self, p1, p2):
         if p1.wins > p2.wins:
-            return p1.name
+            return p1.name + " is the winner!"
         if p1.wins < p2.wins:
-            return p2.name
+            return p2.name + " is the winner!"
         return "It was a tie"
     
-    def draw_winner(self, winner):
+    def draw_winner(self, surface, winner):
         print(winner)
-
-
+        font_path = "Assets/fonts/PressStart2P-Regular.ttf"
+        myfont = pygame.font.Font(font_path, 32)
+        surfaceWidth = surface.get_width()
+        surfaceHeight = surface.get_height()
+        win_text = myfont.render(f"{winner}", 1, self.white)
+        win_rect = win_text.get_rect(center = (surfaceWidth/2, surfaceHeight/2))
+        surface.blit(win_text, win_rect)
+        
+        
 game = Game()
 
 # background color and window size
@@ -127,7 +136,8 @@ is_running = True
 random_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
                                             text='Randomize',
                                             manager=manager)
-
+is_win = False
+winner = None
 #this code helps with performance and framrate issues
 while is_running:
     time_delta = 60/1000.0
@@ -138,15 +148,23 @@ while is_running:
             exit()
         if event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_element == random_button:
-                game.play(background)
+                is_win, winner = game.play(background)
         manager.process_events(event)
     
-    background.fill(pygame.Color('#621D1D'))
-    manager.update(time_delta)
-    game.draw_card(background)
-    game.draw_score(background)
-    window_surface.blit(background, (0, 0))
-    manager.draw_ui(window_surface)
+    if is_win == True:
+        background.fill(pygame.Color('#500000'))
+        game.draw_winner(background, winner)
+        game.draw_score(background)
+        window_surface.blit(background, (0, 0))
+    else:
+        background.fill(pygame.Color('#500000'))
+        manager.update(time_delta)
+        game.draw_card(background)
+        game.draw_score(background)
+        window_surface.blit(background, (0, 0))
+        manager.draw_ui(window_surface)
+    
+    
 
     pygame.display.update()
     clock.tick(60)
