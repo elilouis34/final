@@ -11,6 +11,7 @@ class Card:
               "King", "Ace"]
     
     def __init__(self, val, sui):
+        '''Initialize the Card class'''
         self.value = val
         self.suit = sui
         

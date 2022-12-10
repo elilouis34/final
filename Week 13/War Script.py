@@ -10,6 +10,7 @@ window_surface = pygame.display.set_mode((800, 600), pygame.RESIZABLE)
 
 class Game:
     def __init__(self):
+        '''Initialize the Game class'''
         self.deck = Deck()
         self.p1 = Player("Player 1")
         self.p2 = Player("Player 2")
@@ -55,6 +56,7 @@ class Game:
         
     
     def play(self, surface):
+        '''This is the main logic function that runs the game'''
         cards = self.deck.cards
         print("Begin the War!")
         if len(cards) >= 2:
@@ -95,6 +97,7 @@ class Game:
            
 
     def draw_score(self, surface):
+        '''This displays the score in the pygame window'''
         pygame.font.init()
         pygame.display.flip()
         self.white = (255, 255, 255)
@@ -114,6 +117,7 @@ class Game:
         surface.blit(iter_text, iter_rect)
 
     def totalWinner(self, p1, p2):
+        '''This is the comparison function'''
         if p1.wins > p2.wins:
             return p1.name + " is the winner!"
         if p1.wins < p2.wins:
@@ -121,6 +125,7 @@ class Game:
         return "It was a tie"
     
     def draw_winner(self, surface, winner):
+        '''This displays the winner to the pygame window'''
         print(winner)
         font_path = "Assets/fonts/PressStart2P-Regular.ttf"
         myfont = pygame.font.Font(font_path, 32)
@@ -142,7 +147,7 @@ manager = pygame_gui.UIManager((800, 600))
 clock = pygame.time.Clock()
 is_running = True
 random_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((350, 275), (100, 50)),
-                                            text='Randomize',
+                                            text='War!',
                                             manager=manager)
 
 

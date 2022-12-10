@@ -3,6 +3,7 @@ from random import shuffle
 
 class Deck:
     def __init__(self):
+        '''Initialize the Deck class'''
         self.cards = []
         
         #Fill the deck
